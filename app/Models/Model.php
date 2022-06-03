@@ -14,7 +14,7 @@ class Model
         $pdoReqArg1 = "mysql:host=". $host .";dbname=". $dbname .";";
         $pdoReqArg2 = $dbuser;
         $pdoReqArg3 = $dbpw;
-
+        
         try {
 
             $db = new \PDO($pdoReqArg1, $pdoReqArg2, $pdoReqArg3);
