@@ -14,6 +14,16 @@ class Role extends Model
         $stt->execute();
         return $stt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public static function createRole($post){
+        $db = self::db();
+        $qry = "INSERT INTO roles (nom_role)
+        VALUES (:nom_role)";
+        $stt = $db->prepare($qry);
+        $stt->execute([
+            ':nom_role'=>$post['nom_role']
+        ]);
+    }
 }
 
 
