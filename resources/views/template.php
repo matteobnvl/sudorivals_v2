@@ -26,6 +26,8 @@ $title = (isset($current['name'])) ? ' - ' . ucfirst($current['name']) : '';
 
 <?php require_once __BASEPATH__ . '/resources/views/common/footer.php' ?>
 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript" src="resources/js/app.js"></script>
+
 </body>
 </html>
