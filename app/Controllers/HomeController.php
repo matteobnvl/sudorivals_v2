@@ -10,10 +10,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $users = User::selectAll();
-        $roles = Role::selectAll();
 
         //return view('pages.home', ['users' => $users]);
-        return view('pages.home', compact('users'));
+        return view('pages.home');
     }
 }
