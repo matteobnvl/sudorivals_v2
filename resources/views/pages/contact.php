@@ -1,1 +1,0 @@
-<p>page de contact</p>
