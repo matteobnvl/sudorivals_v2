@@ -12,6 +12,6 @@ class HomeController extends Controller
     {
 
         //return view('pages.home', ['users' => $users]);
-        return view('pages.home');
+        return $this->twig->render('home/index.html.twig', []);
     }
 }
