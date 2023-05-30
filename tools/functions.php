@@ -180,17 +180,17 @@ if (!function_exists('getCurrentRoute')) {
 
 if (!function_exists('route')) {
 
-    function route($name)
+    function route(string $name, array $param = null) :string
     {
-        return Request::route($name);
+        return Request::route($name, $param);
     }
 }
 
 if (!function_exists('redirect')) {
 
-    function redirect($name)
+    function redirect($name, $param = '')
     {
-        header('Location: ' . route($name));
+        header('Location: ' . route($name) . $param);
         exit();
     }
 }
