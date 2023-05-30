@@ -1,6 +1,8 @@
 <?php
 
 use App\Request;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 if (!function_exists('setErrorsDisplay')) {
     function setErrorsDisplay($mode)
@@ -49,9 +51,9 @@ if (!function_exists('getFiles')) {
     function getFiles()
     {
     	// Je récupère tous les fichiers dans tools/traits
-        getFilesRecursively(__BASEPATH__ . '/tools/Traits', '');
+        getFilesRecursively(__BASEPATH__ . '/app/Traits', '');
         // Je récupère tous les fichiers dans tools/interfaces
-        getFilesRecursively(__BASEPATH__ . '/tools/Interfaces', '');
+        getFilesRecursively(__BASEPATH__ . '/app/Interfaces', '');
         require __BASEPATH__ . '/app/Models/Model.php';
         require __BASEPATH__ . '/app/Controllers/Controller.php';
         // Je récupère tous les fichiers dans app/models sauf Model.php
@@ -60,7 +62,7 @@ if (!function_exists('getFiles')) {
         getFilesRecursively(__BASEPATH__ . '/app/Controllers', 'Controller.php');
         require __BASEPATH__ . '/app/Request.php';
         require __BASEPATH__ . '/app/Route.php';
-        require __BASEPATH__ . '/routes/web.php';
+        require __BASEPATH__ . '/app/routes/web.php';
         require __BASEPATH__ . '/app/Kernel.php';
     }
 }
@@ -131,9 +133,9 @@ if (!function_exists('view')) {
     {
         // Je remplace les séparateurs "." par "/"
         $page = str_replace('.', '/', $page);
-        $path = __BASEPATH__ . '/resources/views/';
+        $path = __BASEPATH__ . '/templates/errors/';
 
-        if (file_exists($path . $page  . '.php')) {
+        if (file_exists($path . $page  . '.html.twig')) {
 
             if ($vars !== null) {
                 // J'extrais les variables de $vars si elles existent
@@ -165,8 +167,12 @@ if (!function_exists('abort')) {
         ];
         $message = (isset($references[$code])) ? $references[$code] : '';
 
+        $loader = new FilesystemLoader('./templates');
+
+        $twig = new Environment($loader);
+
         http_response_code($code);
-        echo view('errors.default', compact('code', 'message'));
+        echo $twig->render('errors/default.html.twig', compact('code', 'message'));
     }
 }
 
