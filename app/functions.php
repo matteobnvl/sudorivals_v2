@@ -61,6 +61,7 @@ if (!function_exists('getFiles')) {
         // Je récupère tous les fichiers dans app/controllers sauf Controller.php
         getFilesRecursively(__BASEPATH__ . '/app/Controllers', 'Controller.php');
         require __BASEPATH__ . '/app/Request.php';
+        require __BASEPATH__ . '/app/TwigExtensions.php';
         require __BASEPATH__ . '/app/Route.php';
         require __BASEPATH__ . '/app/routes/web.php';
         require __BASEPATH__ . '/app/Kernel.php';
@@ -69,63 +70,6 @@ if (!function_exists('getFiles')) {
 
 // Liste des fichiers à importer dans le scope principal
 getFiles();
-
-
-if (!function_exists('super_printer')) {
-
-    function super_printer($var)
-    {
-        ob_start(); ?>
-        <style>
-            .dump-container {
-                display: flex;
-                max-width: 90%;
-                width: 400px;
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: flex-start;
-                background-color: #f1f1f1;
-                border-radius: 6px;
-                box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.5);
-                font-family: 'Arial', sans-serif;
-            }
-            .dump-container h4 {
-                margin: 0 0 10px 0;
-                font-size: 22px;
-                padding: 5px 10px;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
-                background-color: #e1e1e1;
-                width: calc(100% - 20px);
-            }
-            .dump-container p {
-                margin: 0 0 10px 0;
-                font-weight: bold;
-                font-size: 14px;
-                padding: 5px 10px;
-            }
-            .dump-container pre {
-                padding: 5px 8px;
-                background-color: #333;
-                color: #fafafa;
-                border-radius: 6px;
-                margin: 10px 20px;
-                overflow: scroll;
-                max-height: 400px;
-                width: calc(100% - 56px);
-                box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.7) inset;
-            }
-        </style>
-        <div class="dump-container">
-            <h4>Printer</h4>
-            <p>Le <?= date("d-m-Y") ?> à <?= date("H:i:s") ?></p>
-            <pre>
-            <?php var_dump($var); ?>
-        </pre>
-        </div>
-        <?php echo ob_get_clean();
-    }
-}
 
 if (!function_exists('view')) {
 
@@ -208,4 +152,31 @@ if (!function_exists('isConnected')) {
     {
         return isset($_SESSION['id']);
     }
+}
+
+if (!function_exists('dateDiff')) {
+    function datediff($date1, $date2)
+    {
+        $date2 = strtotime($date2);
+        $date1 = strtotime($date1);
+        return abs($date1 - $date2);
+    }
+}
+
+function intervalleDate($date = null) {
+    // Si aucune date n'est fournie, utilisez la date d'aujourd'hui
+    if ($date === null) {
+        $date = new DateTime();
+    }
+    
+    $dateActuelle = new DateTime();
+    $date = new DateTime($date);
+    $interval = $date->diff($dateActuelle);
+    
+    if ($interval->y > 0) {
+        return $interval->format('%y ans, %m mois, %d jours');
+    } elseif ($interval->m > 0) {
+        return $interval->format('%m mois, %d jours');
+    }
+    return $interval->format('%d jours');
 }
