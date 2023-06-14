@@ -46,6 +46,7 @@ Nécessaire :
 Changer dans le `.env` la variable `APP_URL` en fonction de votre environnement
 ```
 APP_URL = http://localhost/[Votre nom de dossier]
+```
 
 ## Documentation
 
