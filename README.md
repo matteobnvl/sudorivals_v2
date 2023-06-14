@@ -1,7 +1,5 @@
 # MATTAPHP
-
-Framework php simple et minimaliste.
-
+![](/public/images/mattaphp.png)
 ## Installation
 
 - faire un git clone du projet :
