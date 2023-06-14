@@ -3,6 +3,14 @@
         "twig/twig": "^3.6",
         "vlucas/phpdotenv": "^5.5",
         "phpmailer/phpmailer": "^6.8",
-        "robmorgan/phinx": "^0.13.4"
+        "robmorgan/phinx": "^0.13.4",
+        "fzaninotto/faker": "^1.5"
+    },
+    "scripts": {
+        "phinx": "./vendor/bin/phinx",
+        "db": [
+            "php -r \"mkdir('db/migrations', 0777, true);\"",
+            "php -r \"mkdir('db/seeds', 0777, true);\""
+          ]
     }
 }
