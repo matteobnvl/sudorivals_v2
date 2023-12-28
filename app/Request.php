@@ -30,7 +30,7 @@ class Request
                 $controller = $route['controller'];
                 $method = $route['method'];
                 $params = self::extractParams($route['uri'], $uri);
-
+                
                 try {
                     // Appeler la méthode du contrôleur en passant les paramètres extraits
                     echo call_user_func_array([new $controller, $method], $params);

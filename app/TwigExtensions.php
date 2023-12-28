@@ -13,9 +13,18 @@ class TwigExtensions extends AbstractExtension
         return [
             new TwigFunction('route', 'route'),
             new TwigFunction('isConnected', 'isConnected'),
-            new TwigFunction('intervalleDate', 'intervalleDate')
+            new TwigFunction('intervalleDate', 'intervalleDate'),
+            new TwigFunction('env', 'env')
         ];
     }
+}
+
+function env($key)
+{
+    if (isset($_ENV[$key])) {
+        return $_ENV[$key];
+    }
+    return null;
 }
 
 function route(string $name, array $param = null): string

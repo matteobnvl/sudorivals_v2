@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="title-dashboard">Bonjour {{ user.pseudo }} - {{ user.score }}<i style="color:gold" class="fa-solid fa-trophy"></i></h2>
+<section class="box-game">
+    <form action="{{ route('app_generate') }}" method="POST">
+        <select name="niveau" title="Selectionner un niveau">
+            <option value="Easy">Facile</option>
+            <option value="Medium">Moyen</option>
+            <option value="Hard">Difficile</option>
+        </select>
+        <button id="play" title="lancer une nouvelle partie" type="submit">Jouer</button>
+        <a href="{{ route('app_multi') }}">Jouer en multi</a>
+    </form>
+</section>
+<h3 class="title-h3">Mes derniers sudokus :</h3>
+<section class="section-sudoku">
+    {% for sudoku in sudokus %}
+        <a href="{{ route('app_game', {'id_partie': sudoku.id_partie}) }}" title="Reprendre le sudoku">
+            <div class="box-sudoku">
+                <h4>Sudoku niveau {{ niveau[sudoku.id_niveau] }}</h4>
+                <table>
+                    {% for lignes in sudoku.tableau %}
+                        <tr>
+                            {% for cases in lignes %}
+                                <td>
+                                    {% if cases >= 10 %}
+                                        {{ cases / 10 }}
+                                    {% elseif cases != 0 %}
+                                        {{ cases }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </a>
+    {% endfor %}
+    <a href="<?= route('all_sudoku') ?>" title="Tous mes sudokus">
+        <div class="box">
+            <i class="fa-solid fa-arrow-right"></i>
+        </div>
+    </a>
+</section>
+{% endblock %}

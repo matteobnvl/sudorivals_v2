@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}multi{% endblock %}
+
+{% block content %}
+<h1 class="title">Jouer contre un joueur aléatoirement</h1>
+<section class="multi">
+    <a id="aleatoire" href="{{ route('app_multi') }}?mode=aleatoire">chercher un joueur</a>
+</section>
+<div class="search-multi">
+    {% if message %}
+        <p id="p">
+            {{ message }}
+        </p>
+    {% endif %}
+    <div>
+    {% if id_multi %}
+        <a href="{{ route('app_multi') }}?mode=annuler&id={{id_multi}}">Annuler</a>
+    {% endif %}
+    </div>
+</div>
+
+<script>
+function checkForOpponent() {
+    $('#loader').addClass('active')
+    $.ajax({
+        url: '{{ env('APP_URL') }}/attente',
+        type: 'POST',
+        data: {id_multi: <?= (isset($id_multi))? $id_multi : ''?>},
+        success: function(data) {
+            if (data == 1) {
+                window.location = '{{ env('APP_URL') }}/game-multi?duel={{ id_multi }}'
+            } else {
+                setTimeout(checkForOpponent, 2000);
+            }
+        },
+        error: function() {
+            setTimeout(checkForOpponent, 2000);
+        }
+    });
+}
+$('#aleatoire').click(function () {
+    $('#loader').addClass('active')
+})
+$('#aleatoire').click(checkForOpponent())
+</script>
+{% endblock %}

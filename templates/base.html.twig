@@ -4,17 +4,58 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Framework{% endblock %}</title>
+    <title>Sudorivals {% block title %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.40.0/apexcharts.min.js" integrity="sha512-Kr1p/vGF2i84dZQTkoYZ2do8xHRaiqIa7ysnDugwoOcG0SbIx98erNekP/qms/hBDiBxj336//77d0dv53Jmew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet">  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     {% block stylesheets %}
-        <link rel="stylesheet" href="public/css/app.css">
+        <link rel="stylesheet" href="/public/css/style.css">
+        <link rel="stylesheet" href="/public/css/style_mobile.css">
     {% endblock %}
 </head>
 <body>
     <header>
-        
-    </header>
+    <div class="header">
+        <div id="headerDiv">
+            <div id="menuBT">
+                <span class="burgerMenu bar1"></span>
+                <span class="burgerMenu bar2"></span>
+                <span class="burgerMenu bar3"></span>
+            </div>
+            <div><a id="Home" href="">SudoRivals</a></div>
+        </div>
+        <div id="pages">
+            <div>
+                {% if user is null %}
+                    <a class="btn-header" id="Login" href="{{ route('app_login') }}">Connexion</a>
+                    <a class="btn-header" id="Register" href="{{ route('app_register') }}">Inscription</a>
+                {% else %}
+                    <a class="btn-header" href="{{ route('app_dashboard') }}">Home</a>
+                {% endif %}
+                <a class="btn-header" id="Game" href="">Jouer</a>
+                {% if user %}
+                    <div class="profil">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="toggle-profil">
+                            <li><a class="btn-profil" href="{{ route('app_profil') }}"><i class="fa-regular fa-user"></i>Profil</a></li>
+                            <hr>
+                            <li><a class="btn-profil" href=""><i class="fa-solid fa-user-plus"></i>Demande amis</a></li>
+                            <hr>
+                            <li><a class="btn-profil" href=""><i class="fa-solid fa-right-from-bracket"></i>Se déconnecter</a></li>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
 
     <main>
+        <div id="loader"><div id="load"></div></div>
         {% block content %}
             
         {% endblock %}
@@ -25,7 +66,7 @@
     </footer>
 
     {% block javascripts %}
-        <script src="public/js/app.js"></script>
+        <script src="/public/js/app.js"></script>
     {% endblock %}
 </body>
 </html>

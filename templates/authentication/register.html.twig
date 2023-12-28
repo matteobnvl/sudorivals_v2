@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <form action="{{ route('app_register') }}" method="post" class="form">
+    
+        <h1>Créer un compte</h1>
+
+        <div>
+            <input class="input" type="text" id="pseudo" name="pseudo" required placeholder="pseudo">
+        </div>
+        <div>
+            <input class="input" type="email" id="email" name="email" required placeholder="email">
+        </div>
+        <div>
+            <input class="input" type="password" id="password" name="password" required autocomplete="off" placeholder="mot de passe">
+        </div>
+        <div>
+            <input class="input" type="password" id="password-repeat" name="password-repeat" required autocomplete="off" placeholder="répéter mot de passe">
+        </div>
+        <p id="message"></p>
+        <div>
+            <button id="btnRegister" disabled>M'inscrire</button>
+        </div>
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+        
+    </form>
+</div>
+
+<script>
+
+    $('#password').on('input', function () {
+        password = $(this).val()
+
+        $('#password-repeat').on('input', function () {
+            $('#message').html('Les mots de passe ne sont pas identique')
+
+            if (password == $(this).val()) {
+                $('#btnRegister').removeAttr('disabled')
+                $('#message').empty()
+            } else {
+                $('#btnRegister').attr('disabled', 'disabled')
+            }
+        })
+    })
+</script>
+{% endblock %}

@@ -116,7 +116,7 @@ if (!function_exists('abort')) {
         $twig = new Environment($loader);
 
         http_response_code($code);
-        echo $twig->render('errors/default.html.twig', compact('code', 'message'));
+        return $twig->render('errors/default.html.twig', compact('code', 'message'));
     }
 }
 
@@ -138,9 +138,9 @@ if (!function_exists('route')) {
 
 if (!function_exists('redirect')) {
 
-    function redirect($name, $param = '')
+    function redirect(string $name, array $param = [], string $queryString = '')
     {
-        header('Location: ' . route($name) . $param);
+        header('Location: ' . route($name, $param) . $queryString);
         exit();
     }
 }
@@ -150,7 +150,7 @@ if (!function_exists('isConnected')) {
 
     function isConnected()
     {
-        return isset($_SESSION['id']);
+        return isset($_SESSION['id_joueur']);
     }
 }
 

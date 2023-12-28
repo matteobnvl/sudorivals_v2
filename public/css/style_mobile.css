@@ -1,0 +1,360 @@
+body {
+  margin: 0;
+  font-family: "Rubik", sans-serif;
+  background-color: rgb(255, 255, 255);
+}
+
+.header {
+  box-shadow: 0 1px 0 #0271C0;
+}
+.header #headerDiv {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 2vh;
+}
+.header #headerDiv div {
+  margin-top: 1vh;
+}
+.header #headerDiv div #Home {
+  text-decoration: none;
+  font-size: 12vw;
+  margin: 0;
+  color: #0271C0;
+  margin-right: 14vw;
+}
+.header #headerDiv #menuBT {
+  margin-top: 4vw;
+}
+.header #headerDiv #menuBT .burgerMenu {
+  display: block;
+  width: 10vw;
+  height: 4px;
+  background-color: #0271C0;
+  margin: 8px;
+  border-radius: 3px;
+  transition-property: all;
+  transition-duration: 0.4s;
+  transition-timing-function: ease-in-out;
+}
+.header #pages {
+  display: none;
+}
+.header #pages div {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 2vh;
+}
+.header #pages div .btn-header {
+  padding: 1vw;
+  text-decoration: none;
+  font-size: 4vw;
+  color: black;
+  transition: 200ms;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.change .bar1 {
+  transform: rotate(-45deg) translate(-10px, 8px);
+}
+.change .bar2 {
+  opacity: 0;
+}
+.change .bar3 {
+  transform: rotate(45deg) translate(-8px, -8px);
+}
+
+.addFriend h1 {
+  display: flex;
+  justify-content: center;
+}
+.addFriend p {
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+}
+.addFriend .pseudo input {
+  width: 90%;
+  max-width: 1000px;
+  padding: 12px 20px;
+  margin: auto;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.addFriend h2 {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+.addFriend #listFriends {
+  margin: auto;
+  max-height: 200px;
+  width: 95%;
+  max-width: 1000px;
+  overflow: auto;
+}
+.addFriend #listFriends div {
+  width: 90%;
+  max-width: 900px;
+  margin: auto;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.addFriend #listFriends div:nth-child(even) {
+  background-color: #b9e0fc;
+}
+.addFriend #listFriends div a {
+  margin-left: 15px;
+}
+.addFriend ul {
+  text-align: center;
+}
+.addFriend ul li {
+  margin: 20px 0px;
+  list-style: none;
+}
+.addFriend ul li a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 100px;
+  background-color: #b9e0fc;
+  margin-left: 10px;
+  border-radius: 15px;
+  text-decoration: none;
+  transition: 0.3s ease-in-out;
+}
+.addFriend ul li a:hover {
+  background-color: #0271C0;
+  color: white;
+}
+
+@media screen and (max-width: 768px) {
+  .row {
+    min-height: 80vh;
+    flex-direction: column;
+  }
+  .row form {
+    width: 80%;
+    height: auto;
+  }
+  .row form div {
+    flex-direction: column;
+    width: 100%;
+  }
+  .row form div input {
+    height: auto;
+    margin-bottom: 20px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .row {
+    min-height: 60vh;
+  }
+  .row form {
+    width: 50%;
+    height: 50%;
+  }
+  .row form div {
+    width: 80%;
+  }
+  .row form div input {
+    height: 5vh;
+    margin-bottom: 50px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .sudoku {
+    width: 90%;
+  }
+  .center-play {
+    margin-top: 30%;
+  }
+}
+@media screen and (max-width: 768px) {
+  .title-h1 {
+    display: none;
+  }
+  .sudoku-gameplay .box-vie {
+    position: relative;
+  }
+  .sudoku-gameplay table {
+    width: 100%;
+    height: 100%;
+  }
+  .sudoku-gameplay table td {
+    font-size: 1.5rem;
+  }
+  .sudoku-gameplay .choose-number {
+    width: 100%;
+    margin-top: 40px;
+    grid-template-columns: repeat(3, 20px);
+    grid-gap: 70px;
+  }
+  .sudoku-gameplay .choose-number div {
+    width: 60px;
+    height: 60px;
+  }
+  .toggle {
+    width: 100%;
+    height: 60vh;
+  }
+  .row-home .col {
+    width: 95%;
+  }
+  .row-home .col h2 {
+    width: 100%;
+    text-align: left;
+  }
+  .row-home .col .text1 img {
+    width: 300px;
+  }
+  .row-home .col .text1 .box-p {
+    width: 100%;
+    margin-top: 20px;
+  }
+  .row-home .col .box {
+    justify-content: center;
+  }
+  .row-home .col .box img {
+    width: 300px !important;
+  }
+  .row-home .col .box img:nth-child(odd) {
+    float: right;
+  }
+  .row-home .col .box img:nth-child(even) {
+    float: left;
+  }
+  .row-home .col .box p {
+    text-align: center;
+    font-size: 1.8rem;
+  }
+  .row-home .col .box-img img {
+    width: 100%;
+  }
+  .row-home .col .box-contact form {
+    width: 100%;
+  }
+  .row-home .col .box-contact form .box {
+    width: 100%;
+  }
+  .row-home .col .box-contact form .box input {
+    width: 100%;
+  }
+  .row-home .col .box-contact form .box textarea {
+    max-width: 95%;
+    min-width: 95%;
+  }
+  .row-home .col .box-contact form .box button {
+    width: 100%;
+  }
+  .section-update form {
+    flex-wrap: wrap;
+  }
+  .section-update form div {
+    width: 90%;
+  }
+  .section-update form div input {
+    padding: 0px;
+  }
+  .section-profil {
+    margin-bottom: 5vh;
+  }
+  .section-profil .list-amis .box-btn {
+    padding-bottom: 5%;
+  }
+  .section-profil .list-amis .box-btn button {
+    width: 30%;
+  }
+  .contain-box-sudoku .box-sudoku .box {
+    width: 100%;
+  }
+  .contain-box-sudoku .box-sudoku .box .sudoku {
+    width: 40%;
+  }
+  .contain-box-sudoku .box-sudoku .box .statut {
+    width: 20%;
+  }
+  .contain-box-sudoku .box-sudoku .box .win {
+    width: 20%;
+  }
+  .section-sudoku .box-sudoku {
+    margin: 20px 40px;
+  }
+  .box-game form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .box-game form a {
+    text-align: center;
+    margin-top: 5%;
+  }
+  .sudoku-gameplay .adversaire {
+    top: 5%;
+    right: -5%;
+  }
+  .sudoku-gameplay .btn-adversaire {
+    top: 0;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1000px) {
+  .title-h1 {
+    display: none;
+  }
+  .sudoku-gameplay .box-vie {
+    position: relative;
+  }
+  .sudoku-gameplay table {
+    width: 700px;
+    height: 700px;
+  }
+  .sudoku-gameplay table td {
+    font-size: 1.5rem;
+  }
+  .sudoku-gameplay .choose-number {
+    width: 100%;
+    margin-top: 40px;
+    grid-template-columns: repeat(4, 20px);
+    grid-gap: 70px;
+  }
+  .sudoku-gameplay .choose-number div {
+    width: 60px;
+    height: 60px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .classement-buttons button {
+    width: 40%;
+    font-size: 1rem;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .classement {
+    width: 90%;
+  }
+  .classement table {
+    font-size: 0.8rem;
+  }
+  .classement table thead th {
+    padding: 5px;
+  }
+  .classement table thead th:first-child {
+    font-size: 1.2rem;
+  }
+  .classement table tbody tr td {
+    padding: 5px;
+  }
+  .classement table tbody tr td:first-child img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+  }
+}/*# sourceMappingURL=style_mobile.css.map */

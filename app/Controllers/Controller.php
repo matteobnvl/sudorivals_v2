@@ -15,7 +15,11 @@ class Controller
     {
         $this->loader = new FilesystemLoader('./templates');
 
+        
+        $user = !empty($_SESSION) ? $_SESSION : null;
         $this->twig = new Environment($this->loader);
+        $this->twig->addGlobal('user', $user);
+
         $customExtension = new TwigExtensions();
         $this->twig->addExtension($customExtension);
     }

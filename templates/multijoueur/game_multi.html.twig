@@ -1,0 +1,295 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}game multi{% endblock %}
+
+{% block content %}
+
+<h1 class="title">Vous jouez contre {{ adversaire.pseudo }}</h1>
+<section id="toggleWin" class="toggle <?= ($statut['statut'] == 2 || $statut['statut'] == 3) ? 'active' : '' ?>">
+    <p>
+        {% if statut.statut == 2 %}
+            <p>
+                Bravo tu as réussi ce sudoku !!
+            </p>
+        {% elseif statut.statut == 3 %}
+            <p>
+                Tu n'as pas réussis ce sudoku 
+            </p>
+        {% endif %}
+        <span id="reussi"></span>
+        <br><br>
+            tu as obtenu <span id="score"><?= ($statut['statut'] == 2) ? $statut['score'] : '0' ?></span> points
+        <br><br>
+        <a href="{{ route('app_dashboard') }}">
+            Retour home
+        </a>
+    </p>
+</section>
+<section class="toggle" id="toggleVie">
+    <p id="plusDeVie">
+        Oh mince ! Vous n'avez plus de vies <br> Votre adversaire a gagné
+    </p>
+    <div>
+        <a href="{{ route('app_dashboard') }}">Retour</a>
+    </div> 
+    
+</section>
+<section class="sudoku-gameplay">
+    <p class="box-vie">Vos vies restantes : <span id="vie">{{ statut.vie }}</span> <i style="color:red" class="fa-solid fa-heart"></i></p>
+    <table>
+        {% for keyLignes, lignes in sudoku %}
+            <tr>
+                {% for keyCases, cases in lignes %}
+                    <td 
+                        data-row="{{keyLignes}},{{keyCases}}" 
+                        {% if cases != 0 and cases < 10 %} data-td="{{cases}}" {% else %}style="color:blue"{% endif %}
+                        {% if statut.statut == 2 %}data-finish="1"{% endif %}
+                    >
+                        {% if cases >= 10 %}
+                            {{ cases / 10 }}
+                        {% elseif cases != 0 %}
+                            {{ cases }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <section class="choose-number">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+        <div>7</div>
+        <div>8</div>
+        <div>9</div>
+        <div data-del="1"><i class="fa-solid fa-eraser"></i></div>
+        <div {% if statut.statut != 2 or statut.statut != 3 %}data-check="1"{% endif %}><i class="fa-solid fa-lightbulb"></i></div>
+        <div {% if statut.statut != 2 or statut.statut != 3 %}data-verif="1"{% endif %}><i class="fa-solid fa-check"></i></div>
+    </section>
+    <button class="btn-adversaire"><i class="fa-solid fa-eye"></i></button>
+    <section class="adversaire">
+        <p>vie adverse <span id="vieAdverse"></span></p>
+        <div>
+            <table id="sudokuAdverse"></table>
+        </div>
+    </section>
+</section>
+
+<script>
+    
+const elements = document.querySelectorAll('td')
+const chiffres = document.querySelectorAll('.choose-number div')
+let selected = null
+let arrayCase = {}
+
+elements.forEach(function(item) {
+    item.addEventListener('click', function(event) {
+        if ($(item).attr('data-finish') != 1) {
+            elements.forEach(function(item) {
+                item.classList.remove('selected')
+            })
+            item.classList.add('selected')
+            selected = item
+            }
+        })
+})
+
+chiffres.forEach(function(item) {
+    item.addEventListener('click', function(event) {
+        if (selected !== null && $(selected).attr('data-td') === undefined) {
+            attrCase = $(selected).attr('data-row')
+            if ($(item).attr('data-del') == "1") {
+                selected.textContent = ''
+                selected.className = ''
+                $.ajax({
+                    url: '{{ env('APP_URL') }}/delete-multi',
+                    type: 'POST',
+                    data: {attrCase: attrCase, id: {{ id_sudoku }}}
+                })
+            } else if ($(item).attr('data-check') != "1" && $(item).attr('data-verif') != "1") {
+                selected.textContent = item.textContent
+                selected.className = ''
+                arrayCase = {key: attrCase , value: item.textContent}
+                $.ajax({
+                    url: '{{ env('APP_URL') }}/insert-multi',
+                    type: 'POST',
+                    data: {arrayCase: arrayCase, id: {{ id_sudoku }}}
+                })
+            }
+        }
+    })
+})
+
+$('div[data-check]').click(function () {
+    $.ajax({
+        url: '{{ env('APP_URL') }}/verif-multi',
+        type: 'POST',
+        data: {id_duel: {{ id_multi }}, id_sudoku: {{ id_sudoku }}},
+        success: function (response) {
+            if (response != 'false') {
+                response = JSON.parse(response)
+                vie = parseInt($('#vie').html())
+                vie--
+                $('#vie').html(vie.toString())
+                elements.forEach(function (item) {
+                    response.forEach(function (event) {
+                        if ($(item).attr('data-row') == event.key) {
+                            $(item).addClass((event.value)? 'true' : 'false')
+                        }
+                    })
+                })
+            } else {
+                vie = parseInt($('#vie').html())
+                vie--
+                $('#vie').html(vie.toString())
+                $('#toggleVie').addClass('active')
+                elements.forEach(function (item) {
+                        item.setAttribute('data-finish', '1')
+                })
+            }
+        }
+    })
+})
+
+$('div[data-verif]').click(function () {
+    var finish = true
+    elements.forEach(function (item) {
+        if (item.textContent == 0) {
+            finish = false
+        }
+    })
+    if (finish) {
+        $.ajax({
+            url: '{{ env('APP_URL') }}/finish-multi',
+            type: 'POST',
+            data: {id_duel: {{ id_multi }}, id_sudoku: {{ id_sudoku }}},
+            success: function (response) {
+                response = JSON.parse(response)
+                if (response.key == true) {
+                    elements.forEach(function (item) {
+                        item.setAttribute('data-finish', '1')
+                    })
+                    $('#toggleWin').addClass('active')
+                    $('#reussi').html('Bravo tu as réussi ce sudoku !!')
+                    $('#score').html(response.score)
+                } else {
+                    elements.forEach(function (item) {
+                        response.forEach(function (event) {
+                            if ($(item).attr('data-row') == event.key) {
+                                $(item).addClass((event.value)? 'true' : 'false')
+                            }
+                        })
+                    })
+                }
+            }
+        })
+    }
+})
+
+$('#vie').html({{ statut.vie }})
+$('.btn-adversaire').click(function () {
+    $('.adversaire').toggle('active')
+})
+
+$(document).ready(function() {
+    function getSudoku () {
+        $.ajax({
+            url: '{{ env('APP_URL') }}/sudoku-adverse',
+            type: 'POST',
+            data: {id: {{ adversaire.id_sudoku }}},
+            dataType: "json",
+            success: function(data) {
+                var sudoku = JSON.parse(data);
+                $('#sudokuAdverse').empty()
+                for (var i = 0; i < sudoku.length; i++) {
+                    var row = "<tr>"
+                    for (var j = 0; j < sudoku[i].length; j++) {
+                        if (sudoku[i][j] == 0) {
+                            row += "<td></td>"
+                        } else {
+                            if (typeof sudoku[i][j] == 'string') {
+                                row += "<td>" + sudoku[i][j].slice(0, 1) + "</td>"
+                            } else {
+                                row += "<td>" + sudoku[i][j] + "</td>"
+                            }
+                        }
+                    }
+                    row += "</tr>"
+                    $("#sudokuAdverse").append(row)
+                }
+            }
+        })
+    }
+
+    function getVie () {
+        $.ajax({
+            url: '{{ env('APP_URL') }}/vie',
+            type: 'POST',
+            data: {id_duel: {{ id_multi }}},
+            success: function (data) {
+                $('#vieAdverse').html(data)
+                if (data == 0) {
+                    joueurWin()
+                }
+            }
+        })
+    }
+
+    function getVainqueur() {
+        $.ajax({
+            url: '{{ env('APP_URL') }}/check-vainqueur',
+            type: 'POST',
+            data: {id_duel: {{ id_multi }}},
+            success: function (data) {
+                if (data == 'true') {
+                    joueurLose()
+                }
+            }
+        })
+    }
+
+    function joueurWin() {
+        $.ajax({
+            url: '{{ env('APP_URL') }}/win',
+            type: 'POST',
+            data: {id_duel: {{ id_multi }}, id_sudoku: {{ id_sudoku }}},
+            success: function () {
+                $('#toggleWin').addClass('active')
+                elements.forEach(function (item) {
+                    item.setAttribute('data-finish', '1')
+                })
+                $('#reussi').html("Bravo tu as gagné le duel !")
+                $('#score').html('50')
+            }
+        })
+    }
+
+    function joueurLose() {
+        $.ajax({
+            url: '{{ env('APP_URL') }}/lose',
+            type: 'POST',
+            data: {id_duel: {{ id_multi }}, id_sudoku: {{ id_sudoku }}},
+            success: function () {
+                elements.forEach(function (item) {
+                    item.setAttribute('data-finish', '1')
+                })
+                $('#toggleWin').addClass('active')
+                $('#reussi').html("Oh mince tu as perdu le duel !")
+                $('#score').html('0')
+            }
+        })
+    }
+    getSudoku()
+    getVie()
+    getVainqueur()
+    setInterval(getSudoku, 2000)
+    setInterval(getVie, 2000)
+    setInterval(getVainqueur, 2000)
+})
+</script>
+
+{% endblock %}
+

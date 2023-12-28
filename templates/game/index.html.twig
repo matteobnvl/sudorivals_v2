@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Game{% endblock %}
+
+{% block content %}
+<h1 class="title-h1">Sudoku niveau {{ niveau[statut.id_niveau] }}</h1>
+<section id="toggleWin" class="toggle <?= ($statut['statut'] == 2 || $statut['statut'] == 3) ? 'active' : '' ?>">
+    <p>
+        {% if statut.statut == 2 %}
+            <p>
+                Bravo tu as réussi ce sudoku !!
+            </p>
+        {% elseif statut.statut == 3 %}
+            <p>
+                Tu n'as pas réussis ce sudoku 
+            </p>
+        {% endif %}
+        <span id="reussi"></span>
+        <br><br>
+        tu as obtenu 
+        <span id="score">
+            {% if statut.statut == 2 %}
+                {{ statut.score }}
+            {% else %}
+                0
+            {% endif %}
+            points
+        </span>
+        <br><br>
+        <a href="{{ route('app_dashboard') }}">
+            Retour home
+        </a>
+    </p>
+</section>
+<section class="toggle" id="toggleVie">
+    <p id="plusDeVie">
+        Oh mince ! Vous n'avez plus de vie
+    </p>
+    <div>
+        <a href="{{ route('app_dashboard') }}">Arreter la partie</a>
+        <a href="{{ route('app_retry') }}?sudoku={{ id_partie }}">Recommencer</a>
+    </div> 
+    
+</section>
+<section class="sudoku-gameplay">
+    <p class="box-vie">Vos vies restantes : <span id="vie">{{ statut.vie }}</span> <i style="color:red" class="fa-solid fa-heart"></i></p>
+    <table>
+        {% for keyLignes, lignes in sudoku %}
+            <tr>
+                {% for keyCases, cases in lignes %}
+                    <td 
+                        data-row="{{keyLignes}},{{keyCases}}" 
+                        {% if cases != 0 and cases < 10 %} data-td="{{cases}}" {% else %}style="color:blue"{% endif %}
+                        {% if statut.statut == 2 %}data-finish="1"{% endif %}
+                    >
+                        {% if cases >= 10 %}
+                            {{ cases / 10 }}
+                        {% elseif cases != 0 %}
+                            {{ cases }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <section class="choose-number">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+        <div>7</div>
+        <div>8</div>
+        <div>9</div>
+        <div data-del="1"><i class="fa-solid fa-eraser"></i></div>
+        <div {% if statut.statut != 2 or statut.statut != 3 %}data-check="1"{% endif %}><i class="fa-solid fa-lightbulb"></i></div>
+        <div {% if statut.statut != 2 or statut.statut != 3 %}data-verif="1"{% endif %}><i class="fa-solid fa-check"></i></div>
+    </section>
+</section>
+
+
+
+<script>
+
+const elements = document.querySelectorAll('td')
+const chiffres = document.querySelectorAll('.choose-number div')
+let selected = null
+let arrayCase = {}
+
+elements.forEach(function(item) {
+    item.addEventListener('click', function(event) {
+        if ($(item).attr('data-finish') != 1) {
+            elements.forEach(function(item) {
+                item.classList.remove('selected')
+            })
+            item.classList.add('selected')
+            selected = item
+            }
+        })
+})
+
+chiffres.forEach(function(item) {
+    item.addEventListener('click', function(event) {
+        if (selected !== null && $(selected).attr('data-td') === undefined) {
+            attrCase = $(selected).attr('data-row')
+            if ($(item).attr('data-del') == "1") {
+                selected.textContent = ''
+                selected.className = ''
+                $.ajax({
+                    url: '{{ env('APP_URL')}}/delete',
+                    type: 'POST',
+                    data: {attrCase: attrCase, id: {{ id_partie }}}
+                })
+            } else if ($(item).attr('data-check') != "1" && $(item).attr('data-verif') != "1") {
+                selected.textContent = item.textContent
+                selected.className = ''
+                arrayCase = {key: attrCase , value: item.textContent}
+                $.ajax({
+                    url: '{{ env('APP_URL')}}/insert',
+                    type: 'POST',
+                    data: {arrayCase: arrayCase, id: {{ id_partie }}}
+                })
+            }
+        }
+    })
+})
+
+$('div[data-check]').click(function () {
+    $.ajax({
+        url: '{{ env('APP_URL')}}/verif',
+        type: 'POST',
+        data: {id: {{ id_partie }}},
+        success: function (response) {
+            if (response != 'false') {
+                response = JSON.parse(response)
+                vie = parseInt($('#vie').html())
+                vie--
+                $('#vie').html(vie.toString())
+                elements.forEach(function (item) {
+                    response.forEach(function (event) {
+                        if ($(item).attr('data-row') == event.key) {
+                            $(item).addClass((event.value)? 'true' : 'false')
+                        }
+                    })
+                })
+            } else {
+                vie = parseInt($('#vie').html())
+                vie--
+                $('#vie').html(vie.toString())
+                $('#toggleVie').addClass('active')
+                elements.forEach(function (item) {
+                        item.setAttribute('data-finish', '1')
+                })
+            }
+        }
+    })
+})
+
+$('div[data-verif]').click(function () {
+    var finish = true
+    elements.forEach(function (item) {
+        if (item.textContent == 0) {
+            finish = false
+        }
+    })
+    if (finish) {
+        $.ajax({
+            url: '{{ env('APP_URL')}}/finish',
+            type: 'POST',
+            data: {id: {{ id_partie }}},
+            success: function (response) {
+                response = JSON.parse(response)
+                if (response.key == true) {
+                    elements.forEach(function (item) {
+                        item.setAttribute('data-finish', '1')
+                    })
+                    $('#toggleWin').addClass('active')
+                    $('#reussi').html('Bravo tu as réussi ce sudoku !!')
+                    $('#score').html(response.score)
+                } else {
+                    elements.forEach(function (item) {
+                        response.forEach(function (event) {
+                            if ($(item).attr('data-row') == event.key) {
+                                $(item).addClass((event.value)? 'true' : 'false')
+                            }
+                        })
+                    })
+                }
+            }
+        })
+    }
+})
+
+</script>
+{% endblock %}
